@@ -34,6 +34,34 @@ public record GameData
     public bool TryAdd(Item item) => Items.TryAdd(item.Id, item);
     public bool TryAdd(Creature creature) => Creatures.TryAdd(creature.Id, creature);
 
+    // Three methods named TryUpdate.  Each one replaces a thing that's already stored, and refuses one that isn't.
+    public bool TryUpdate(Area area)
+    {
+        if (!Areas.ContainsKey(area.Id))
+            return false;
+
+        Areas[area.Id] = area;
+        return true;
+    }
+
+    public bool TryUpdate(Item item)
+    {
+        if (!Items.ContainsKey(item.Id))
+            return false;
+
+        Items[item.Id] = item;
+        return true;
+    }
+
+    public bool TryUpdate(Creature creature)
+    {
+        if (!Creatures.ContainsKey(creature.Id))
+            return false;
+
+        Creatures[creature.Id] = creature;
+        return true;
+    }
+
     //--------------------------------------------------------------
     //  Methods for retrieving Areas, Items, and Creatures by their label.
     // TODO:  This is a very simple implementation.  It does not handle errors.  It is just a starting point.

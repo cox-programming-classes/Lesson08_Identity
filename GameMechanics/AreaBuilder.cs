@@ -57,6 +57,12 @@ public record AreaBuilder
         this with { _items = [.. _items, item] };
 
     /// <summary>
+    /// Adds a way out of the area being built.  The neighbor must already be in the GameData.
+    /// </summary>
+    public AreaBuilder WithNeighbor(AreaReferenceLabel neighbor) =>
+        this with { _neighbors = [.. _neighbors, neighbor] };
+
+    /// <summary>
     /// Puts the area together from whatever parts have been set, and hands back the Area itself.
     /// Every call builds a brand-new Area, with an identity of its own.
     /// </summary>

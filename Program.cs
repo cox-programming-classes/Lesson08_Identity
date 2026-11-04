@@ -59,8 +59,14 @@ var cave = AreaBuilder
     .WithCreature(goblinRecipe.Build(gameData)!)
     .WithCreature(goblinRecipe.Build(gameData)!)
     .WithCreature(wolf!)
+    .WithNeighbor(forest!)
     .Build(gameData);
 
 Console.WriteLine(gameData.Get(cave)?.LookAround() ?? "nothing to look at");
+
+// The forest was built before the cave existed, so it gets its way out by Update.
+var f = gameData.Get(forest)!;
+gameData.TryUpdate(f with { Neighbors = [.. f.Neighbors, cave!] });
+Console.WriteLine(gameData.Get(forest)?.LookAround() ?? "nothing to look at");
 
 player.ShowSheet();

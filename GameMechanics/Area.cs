@@ -74,6 +74,14 @@ public record Area
                 sb.AppendLine($"- {item.Label}");
             }
         }
+        if (Neighbors.Any())
+        {
+            sb.AppendLine("From here you can go to:");
+            foreach (var neighbor in Neighbors)
+            {
+                sb.AppendLine($"- {neighbor.Label}");
+            }
+        }
         return sb.ToString();
     }
 }
