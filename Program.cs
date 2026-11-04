@@ -1,4 +1,5 @@
 using TheWorld.GameMechanics;
+using TheWorld.GameMechanics.StockEntities;
 using TheWorld.Display;
 
 using static TheWorld.Rules.DiceRollStrategies;
@@ -46,5 +47,20 @@ var forest = AreaBuilder
     .Build(gameData);
 
 Console.WriteLine(gameData.Get(forest)?.LookAround() ?? "nothing to look at");
+
+var wolf = CreatureBuilder
+    .FromName("Wolf")
+    .WithExperienceReward(50)
+    .Build(gameData);
+
+var cave = AreaBuilder
+    .FromName("Cave")
+    .WithDescription("Damp, and it smells like goblin.")
+    .WithCreature(goblinRecipe.Build(gameData)!)
+    .WithCreature(goblinRecipe.Build(gameData)!)
+    .WithCreature(wolf!)
+    .Build(gameData);
+
+Console.WriteLine(gameData.Get(cave)?.LookAround() ?? "nothing to look at");
 
 player.ShowSheet();
