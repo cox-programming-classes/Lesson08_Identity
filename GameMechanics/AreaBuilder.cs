@@ -9,6 +9,9 @@ public record AreaBuilder
     private IReadOnlyList<ItemReferenceLabel> _items = [];
     private IReadOnlyList<AreaReferenceLabel> _neighbors = [];
 
+    // Set only by Edit, so that Build makes the same area again, with its new values.
+    private Guid? _id;
+
     private AreaBuilder() { }
 
     /// <summary>
@@ -30,6 +33,12 @@ public record AreaBuilder
         _items = area.Items,
         _neighbors = area.Neighbors
     };
+
+    /// <summary>
+    /// Start from an area that's already in the GameData, to change it.
+    /// Unlike FromArea, it keeps the area's Id, so Update can put the changed area back in its place.
+    /// </summary>
+    public static AreaBuilder Edit(Area area) => FromArea(area) with { _id = area.Id };
 
 
     /// <summary>
@@ -64,10 +73,11 @@ public record AreaBuilder
 
     /// <summary>
     /// Puts the area together from whatever parts have been set, and hands back the Area itself.
-    /// Every call builds a brand-new Area, with an identity of its own.
+    /// Every call builds a brand-new Area, with an identity of its own, unless the builder started from Edit.
     /// </summary>
     public Area Build() => new(_name)
     {
+        Id = _id ?? Guid.NewGuid(),
         Description = _description,
         Creatures = _creatures,
         Items = _items,
@@ -83,6 +93,19 @@ public record AreaBuilder
     {
         var area = Build();
         if (gameData.TryAdd(area))
+            return new() { Id = area.Id, Label = area.Name };
+
+        return null;
+    }
+
+    /// <summary>
+    /// Puts the changed area back into the game data, in place of the one Edit started from.
+    /// </summary>
+    /// <returns>A label for the changed area, or null if there was nothing to update.</returns>
+    public AreaReferenceLabel? Update(GameData gameData)
+    {
+        var area = Build();
+        if (gameData.TryUpdate(area))
             return new() { Id = area.Id, Label = area.Name };
 
         return null;
