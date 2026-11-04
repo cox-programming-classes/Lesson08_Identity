@@ -47,4 +47,37 @@ var forest = AreaBuilder
 
 Console.WriteLine(gameData.Get(forest)?.LookAround() ?? "nothing to look at");
 
+// Part Two:  a cave of our own.  CreatureBuilder.Build(gameData) calls Build() to make the creature,
+// so the creature still gets put together in one place, then files it and hands back a label.
+var wolf = CreatureBuilder
+    .FromName("Wolf")
+    .WithExperienceReward(50)
+    .Build(gameData);
+
+var bat = CreatureBuilder
+    .FromName("Bat")
+    .WithExperienceReward(10)
+    .Build(gameData);
+
+var lantern = ItemBuilder
+    .FromName("Lantern")
+    .WithDescription("A rusty lantern.  Somebody left it here, still burning.")
+    .Build(gameData);
+
+var cave = AreaBuilder
+    .FromName("Cave")
+    .WithDescription("Damp and dark.  Something drips, and something else squeaks.")
+    .WithCreature(goblinRecipe.Build(gameData)!)
+    .WithCreature(goblinRecipe.Build(gameData)!)
+    .WithCreature(wolf!)
+    .WithCreature(bat!)
+    .WithItem(lantern!)
+    .Build(gameData);
+
+Console.WriteLine(gameData.Get(cave)?.LookAround() ?? "nothing to look at");
+
+// One goblin, or two?  Two labels with two different Guids lead to two goblins, so this prints False.
+var caveGoblins = gameData.Get(cave)!.Creatures;
+Console.WriteLine(ReferenceEquals(gameData.Get(caveGoblins[0]), gameData.Get(caveGoblins[1])));
+
 player.ShowSheet();
